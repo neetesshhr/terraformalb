@@ -1,8 +1,14 @@
+resource "aws_key_pair" "key_pair" {
+  key_name = "mykeypair"
+  public_key = "${file("mykeypair.pub")}"
+  
+}
+
 resource "aws_instance" "web-server" {
   ami = "ami-06e46074ae430fba6"
   instance_type = "t2.micro"
   count = 2
-  key_name= "testkeyuseast"
+  key_name= aws_key_pair.key_pair.key_name
   security_groups = ["${aws_security_group.web-server.name}"]
   user_data = <<-EOF
      #!/bin/bash
